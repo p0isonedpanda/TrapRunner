@@ -13,15 +13,17 @@ public class playerController : MonoBehaviour
     [SerializeField] float jumpSpeed = 10.0f;
     [SerializeField] float lookSpeed = 10.0f;
     [SerializeField] float gravity = 30.0f;
-    [SerializeField] GameObject playerCam;
+    [SerializeField] GameObject playerCam, pauseMenu;
     [SerializeField] Image staminaBar, outerCrosshair;
     [SerializeField] LayerMask raycastInclude;
+    [SerializeField] LayerMask terrainLayer;
     Vector3 moveDir = Vector3.zero;
     CharacterController charController;
     float mouseYLook = 0.0f;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
     bool holdingItem = false;
+    bool itemDropped = true;
     GameObject itemHeld;
 
 	// Use this for initialization
@@ -70,6 +72,25 @@ public class playerController : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
                 moveDir.y = jumpSpeed;
         }
+        else // If we are in the air
+        {
+            RaycastHit frontCheck;
+            Debug.DrawRay(new Vector3(charController.transform.position.x, charController.transform.position.y - 0.8f, charController.transform.position.z), Vector3.forward, Color.red);
+
+            if (Physics.Raycast(new Vector3(charController.transform.position.x,
+                charController.transform.position.y - 0.8f,
+                charController.transform.position.z),
+                playerCam.transform.TransformDirection(Vector3.forward),
+                out frontCheck, 1.0f, terrainLayer.value))
+            {
+                if (Input.GetButtonDown("Jump") && stamina > 20.0f)
+                {
+                    moveDir.y = jumpSpeed;
+                    stamina -= 20.0f;
+                }
+
+            }
+        }
 
         staminaBar.transform.localScale = new Vector3(stamina / 100.0f, 1.0f, 1.0f);
 
@@ -90,14 +111,14 @@ public class playerController : MonoBehaviour
             playerCam.transform.eulerAngles.y,
             playerCam.transform.eulerAngles.z);
 
-        RaycastHit hit;
+        RaycastHit pickupRay;
 
         if (Physics.Raycast(playerCam.transform.position,
             playerCam.transform.TransformDirection(Vector3.forward),
-            out hit, 2.0f, raycastInclude.value))
+            out pickupRay, 2.0f, raycastInclude.value))
         {
             // If we see something we can pickup, we want to make the outer crosshair visible
-            switch (hit.collider.tag)
+            switch (pickupRay.collider.tag)
             {
                 case "crate":
                     outerCrosshair.color = new Vector4(outerCrosshair.color.r,
@@ -108,7 +129,8 @@ public class playerController : MonoBehaviour
                     if (Input.GetKeyDown(KeyCode.E) && !holdingItem)
                     {
                         holdingItem = true;
-                        itemHeld = hit.collider.gameObject;
+                        itemDropped = false;
+                        itemHeld = pickupRay.collider.gameObject;
                     }
                     break;
 
@@ -141,7 +163,26 @@ public class playerController : MonoBehaviour
         }
         else
         {
-            playerCam.transform.DetachChildren();
+            if (!itemDropped)
+            {
+                playerCam.transform.DetachChildren();
+                itemHeld.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                itemHeld.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                itemDropped = true;
+            }
+        }
+
+        if (Time.timeScale != 0 && Input.GetKeyDown(KeyCode.P)) // Pause the game
+        {
+            Time.timeScale = 0;
+            pauseMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (Time.timeScale == 0 && Input.GetKeyDown(KeyCode.P)) // Unpause the game
+        {
+            Time.timeScale = 1;
+            pauseMenu.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 }
