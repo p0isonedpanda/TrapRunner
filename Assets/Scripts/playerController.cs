@@ -14,12 +14,15 @@ public class playerController : MonoBehaviour
     [SerializeField] float lookSpeed = 10.0f;
     [SerializeField] float gravity = 30.0f;
     [SerializeField] GameObject playerCam;
-    [SerializeField] Image staminaBar;
+    [SerializeField] Image staminaBar, outerCrosshair;
+    [SerializeField] LayerMask raycastInclude;
     Vector3 moveDir = Vector3.zero;
     CharacterController charController;
     float mouseYLook = 0.0f;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
+    bool holdingItem = false;
+    GameObject itemHeld;
 
 	// Use this for initialization
 	void Start()
@@ -36,28 +39,32 @@ public class playerController : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f) // Sprinting
             {
                 moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"))) * sprintSpeed;
-                stamina -= staminaUsageRate * Time.deltaTime;
-                staminaRecoveryTimer = 0.0f;
 
-                if (stamina < 0.0f)
+                // Make sure we're moving before consuming stamina
+                if (moveDir != Vector3.zero)
                 {
-                    stamina = 0.0f;
+                    stamina -= staminaUsageRate * Time.deltaTime; // Consume stamina while sprinting
+                    staminaRecoveryTimer = 0.0f;
                 }
+
+                // Make sure stamina doesn't go lower than 0
+                if (stamina < 0.0f)
+                    stamina = 0.0f;
             }
             else // Running
             {
                 moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"))) * moveSpeed;
                 staminaRecoveryTimer += Time.deltaTime;
 
+                // If we've hit the stamina cooldown time, then start to regen stamina
                 if (staminaRecoveryTimer >= staminaRecoveryCooldown && stamina < 100.0f)
                 {
                     stamina += staminaRecoveryRate * Time.deltaTime;
                 }
 
+                // Make sure stamina doesn't go higher than 100
                 if (stamina > 100.0f)
-                {
                     stamina = 100.0f;
-                }
             }
 
             if (Input.GetButtonDown("Jump"))
@@ -82,5 +89,59 @@ public class playerController : MonoBehaviour
         playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
             playerCam.transform.eulerAngles.y,
             playerCam.transform.eulerAngles.z);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(playerCam.transform.position,
+            playerCam.transform.TransformDirection(Vector3.forward),
+            out hit, 2.0f, raycastInclude.value))
+        {
+            // If we see something we can pickup, we want to make the outer crosshair visible
+            switch (hit.collider.tag)
+            {
+                case "crate":
+                    outerCrosshair.color = new Vector4(outerCrosshair.color.r,
+                        outerCrosshair.color.g,
+                        outerCrosshair.color.b,
+                        Mathf.Lerp(outerCrosshair.color.a, 1.0f, 0.3f));
+
+                    if (Input.GetKeyDown(KeyCode.E) && !holdingItem)
+                    {
+                        holdingItem = true;
+                        itemHeld = hit.collider.gameObject;
+                    }
+                    break;
+
+                default: // If we can't pick it up, fade out outer crosshair
+                    outerCrosshair.color = new Vector4(outerCrosshair.color.r,
+                        outerCrosshair.color.g,
+                        outerCrosshair.color.b,
+                        Mathf.Lerp(outerCrosshair.color.a, 0.0f, 0.3f));
+                    break;
+            }
+        }
+        else
+        {
+            // If we don't have any pickups in range, fade out outer crosshair
+            outerCrosshair.color = new Vector4(outerCrosshair.color.r,
+                    outerCrosshair.color.g,
+                    outerCrosshair.color.b,
+                    Mathf.Lerp(outerCrosshair.color.a, 0.0f, 0.3f));
+        }
+
+        if (holdingItem)
+        {
+            itemHeld.transform.SetParent(playerCam.transform);
+            itemHeld.transform.localPosition = new Vector3(0, 0, 1.5f);
+            itemHeld.transform.localEulerAngles = Vector3.zero;
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                holdingItem = false;
+            }
+        }
+        else
+        {
+            playerCam.transform.DetachChildren();
+        }
     }
 }
