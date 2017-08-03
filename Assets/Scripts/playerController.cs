@@ -36,10 +36,5 @@ public class playerController : MonoBehaviour
                 0.0f,
                 Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime));
         }
-
-        if (charController.isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Jumping");
-        }
     }
 }
