@@ -39,6 +39,15 @@ public class playerController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            charController.height = Mathf.Lerp(charController.height, 1.0f, 0.2f);
+        }
+        else
+        {
+            charController.height = Mathf.Lerp(charController.height, 2.0f, 0.2f);
+        }
+
         if (charController.isGrounded)
         {
             if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f) // Sprinting
@@ -193,24 +202,26 @@ public class playerController : MonoBehaviour
 
         // Weapons hit detection
         RaycastHit weaponRay;
-        Debug.DrawRay(playerCam.transform.position, playerCam.transform.TransformDirection(GetWeaponInaccuracy()) * 100, Color.red);
         fireRateTimer += Time.deltaTime;
 
-        if (Physics.Raycast(playerCam.transform.position,
-            playerCam.transform.TransformDirection(GetWeaponInaccuracy()),
-            out weaponRay, weaponRange, weaponHitLayer.value) &&
-            fireRateTimer >= weaponFireRate &&
-            Input.GetKey(KeyCode.Mouse0))
+        // If we're allowed to fire...
+        if (Input.GetKey(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate)
         {
-            Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(Vector3.zero));
-            fireRateTimer = 0.0f;
-
-            // Check if we hit the enemy AI
-            if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            // ...then we want to raycast
+            if (Physics.Raycast(playerCam.transform.position,
+            playerCam.transform.TransformDirection(GetWeaponInaccuracy()),
+            out weaponRay, weaponRange, weaponHitLayer.value))
             {
-                weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
+                Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(Vector3.zero));
+                fireRateTimer = 0.0f;
+
+                // Check if we hit the enemy AI
+                if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
+                }
             }
-        }
+        }  
     }
 
     // Used to create inaccuracy when the weapon is shot
