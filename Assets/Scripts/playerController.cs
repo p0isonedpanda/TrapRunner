@@ -13,15 +13,18 @@ public class playerController : MonoBehaviour
     [SerializeField] float jumpSpeed = 10.0f;
     [SerializeField] float lookSpeed = 10.0f;
     [SerializeField] float gravity = 30.0f;
-    [SerializeField] GameObject playerCam, pauseMenu;
+    [SerializeField] float weaponRange = 100.0f;
+    [SerializeField] float weaponFireRate = 0.1f;
+    [SerializeField] float weaponInaccuracy = 0.0f;
+    [SerializeField] GameObject playerCam, pauseMenu, bulletDecal;
     [SerializeField] Image staminaBar, outerCrosshair;
-    [SerializeField] LayerMask raycastInclude;
-    [SerializeField] LayerMask terrainLayer;
+    [SerializeField] LayerMask raycastInclude, terrainLayer, weaponHitLayer;
     Vector3 moveDir = Vector3.zero;
     CharacterController charController;
     float mouseYLook = 0.0f;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
+    float fireRateTimer = 0.0f;
     bool holdingItem = false;
     bool itemDropped = true;
     GameObject itemHeld;
@@ -153,16 +156,18 @@ public class playerController : MonoBehaviour
 
         if (holdingItem)
         {
+            // If we're holding an item, we need to parent it to the camera and place it in front
             itemHeld.transform.SetParent(playerCam.transform);
             itemHeld.transform.localPosition = new Vector3(0, 0, 1.5f);
             itemHeld.transform.localEulerAngles = Vector3.zero;
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0)) // Check if we want to drop it
             {
                 holdingItem = false;
             }
         }
         else
         {
+            // When we drop the item, make sure it has no velocity
             if (!itemDropped)
             {
                 playerCam.transform.DetachChildren();
@@ -172,6 +177,7 @@ public class playerController : MonoBehaviour
             }
         }
 
+        // Pause menu
         if (Time.timeScale != 0 && Input.GetKeyDown(KeyCode.P)) // Pause the game
         {
             Time.timeScale = 0;
@@ -184,5 +190,32 @@ public class playerController : MonoBehaviour
             pauseMenu.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
         }
+
+        // Weapons hit detection
+        RaycastHit weaponRay;
+        Debug.DrawRay(playerCam.transform.position, playerCam.transform.TransformDirection(GetWeaponInaccuracy()) * 100, Color.red);
+        fireRateTimer += Time.deltaTime;
+
+        if (Physics.Raycast(playerCam.transform.position,
+            playerCam.transform.TransformDirection(GetWeaponInaccuracy()),
+            out weaponRay, weaponRange, weaponHitLayer.value) &&
+            fireRateTimer >= weaponFireRate &&
+            Input.GetKey(KeyCode.Mouse0))
+        {
+            Debug.Log("Pew!");
+            Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(Vector3.zero));
+            fireRateTimer = 0.0f;
+        }
+    }
+
+    // Used to create inaccuracy when the weapon is shot
+    Vector3 GetWeaponInaccuracy()
+    {
+        if (weaponInaccuracy > 0)
+            return Vector3.forward + new Vector3(
+                Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2),
+                Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2), 0);
+        else
+            return Vector3.forward;
     }
 }
