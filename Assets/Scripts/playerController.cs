@@ -202,9 +202,14 @@ public class playerController : MonoBehaviour
             fireRateTimer >= weaponFireRate &&
             Input.GetKey(KeyCode.Mouse0))
         {
-            Debug.Log("Pew!");
             Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(Vector3.zero));
             fireRateTimer = 0.0f;
+
+            // Check if we hit the enemy AI
+            if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
+            }
         }
     }
 

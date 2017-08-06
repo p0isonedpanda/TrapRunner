@@ -8,6 +8,7 @@ public class AINavigation : MonoBehaviour
     [SerializeField] GameObject pointer;
     [SerializeField] bool debugAIDestination;
     [SerializeField] float distCheckPadding = 2.0f;
+    [SerializeField] GameObject aiHitGhost;
     GameObject pointerRef;
     Transform target;
     NavMeshAgent aiAgent;
@@ -51,5 +52,12 @@ public class AINavigation : MonoBehaviour
         NavMesh.SamplePosition(randDirection, out hit, 100.0f, 1);
         Debug.Log("Setting a new destination: (" + hit.position.x + ", " + hit.position.z + ")");
         return hit;
+    }
+
+    // Called whenever the AI takes damage
+    public void ApplyDamage(float damageTaken)
+    {
+        Debug.Log("Taking " + damageTaken + " damage");
+        Instantiate(aiHitGhost, transform.position, transform.rotation); // Used for debug reasons only to track where the AI has been hit
     }
 }
