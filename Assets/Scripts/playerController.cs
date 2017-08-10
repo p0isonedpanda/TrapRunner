@@ -213,13 +213,16 @@ public class playerController : MonoBehaviour
             playerCam.transform.TransformDirection(GetWeaponInaccuracy()),
             out weaponRay, weaponRange, weaponHitLayer.value))
             {
-                Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(Vector3.zero));
                 fireRateTimer = 0.0f;
 
                 // Check if we hit the enemy AI
                 if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
+                }
+                else // If not, then create a bullet decal
+                {
+                    Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(weaponRay.normal));
                 }
             }
         }  
