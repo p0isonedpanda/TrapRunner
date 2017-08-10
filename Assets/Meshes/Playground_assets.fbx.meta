@@ -1,0 +1,149 @@
+fileFormatVersion: 2
+guid: 137f619dc1a573d4fa1e9e77d05d3c67
+timeCreated: 1502339516
+licenseType: Free
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: cylinder
+    100002: cylinder short
+    100004: floor
+    100006: platform ramp
+    100008: //RootNode
+    100010: Ramp
+    100012: tube entry
+    100014: tube exit
+    100016: tube ramp
+    100018: tube straight.000
+    100020: tube straight.002
+    100022: tube turn
+    100024: tube window
+    100026: window
+    400000: cylinder
+    400002: cylinder short
+    400004: floor
+    400006: platform ramp
+    400008: //RootNode
+    400010: Ramp
+    400012: tube entry
+    400014: tube exit
+    400016: tube ramp
+    400018: tube straight.000
+    400020: tube straight.002
+    400022: tube turn
+    400024: tube window
+    400026: window
+    2300000: cylinder
+    2300002: cylinder short
+    2300004: floor
+    2300006: platform ramp
+    2300008: Ramp
+    2300010: tube entry
+    2300012: tube exit
+    2300014: tube ramp
+    2300016: tube straight.000
+    2300018: tube straight.002
+    2300020: tube turn
+    2300022: tube window
+    2300024: window
+    3300000: cylinder
+    3300002: cylinder short
+    3300004: floor
+    3300006: platform ramp
+    3300008: Ramp
+    3300010: tube entry
+    3300012: tube exit
+    3300014: tube ramp
+    3300016: tube straight.000
+    3300018: tube straight.002
+    3300020: tube turn
+    3300022: tube window
+    3300024: window
+    4300000: tube straight.000
+    4300002: tube straight.002
+    4300004: platform ramp
+    4300006: floor
+    4300008: cylinder
+    4300010: cylinder short
+    4300012: Ramp
+    4300014: window
+    4300016: tube window
+    4300018: tube entry
+    4300020: tube exit
+    4300022: tube turn
+    4300024: tube ramp
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

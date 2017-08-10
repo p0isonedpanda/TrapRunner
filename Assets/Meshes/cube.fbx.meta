@@ -1,29 +1,83 @@
 fileFormatVersion: 2
-guid: 322f42a3852c7f84c9aa4959938a6589
-timeCreated: 1502159200
+guid: bcde4d40a74bff04aa148b9927aa4140
+timeCreated: 1502184130
 licenseType: Free
 ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
-    100000: baseMesh
-    100002: //RootNode
-    100004: UW_ground
-    100006: WA_buildings
-    400000: baseMesh
-    400002: //RootNode
-    400004: UW_ground
-    400006: WA_buildings
-    2300000: baseMesh
-    2300002: UW_ground
-    2300004: WA_buildings
-    3300000: baseMesh
-    3300002: UW_ground
-    3300004: WA_buildings
-    4300000: UW_ground
-    4300002: WA_buildings
-    4300004: baseMesh
-    7400000: Default Take
-    9500000: //RootNode
+    100000: Camera
+    100002: Cube
+    100004: //RootNode
+    100006: Cube.001
+    100008: Cube.002
+    100010: Cube.003
+    100012: Cube.004
+    100014: Cube.005
+    100016: Cube.006
+    100018: Cube.007
+    100020: Cube.008
+    100022: Cube.009
+    100024: Cube.010
+    100026: Cylinder
+    100028: Lamp
+    100030: Plane
+    400000: Camera
+    400002: Cube
+    400004: //RootNode
+    400006: Cube.001
+    400008: Cube.002
+    400010: Cube.003
+    400012: Cube.004
+    400014: Cube.005
+    400016: Cube.006
+    400018: Cube.007
+    400020: Cube.008
+    400022: Cube.009
+    400024: Cube.010
+    400026: Cylinder
+    400028: Lamp
+    400030: Plane
+    2000000: Camera
+    2300000: Cube
+    2300002: Cube.001
+    2300004: Cube.002
+    2300006: Cube.003
+    2300008: Cube.004
+    2300010: Cube.005
+    2300012: Cube.006
+    2300014: Cube.007
+    2300016: Cube.008
+    2300018: Cube.009
+    2300020: Cube.010
+    2300022: Cylinder
+    2300024: Plane
+    3300000: Cube
+    3300002: Cube.001
+    3300004: Cube.002
+    3300006: Cube.003
+    3300008: Cube.004
+    3300010: Cube.005
+    3300012: Cube.006
+    3300014: Cube.007
+    3300016: Cube.008
+    3300018: Cube.009
+    3300020: Cube.010
+    3300022: Cylinder
+    3300024: Plane
+    4300000: Cube.010
+    4300002: Cube.009
+    4300004: Cube.008
+    4300006: Cube.007
+    4300008: Cube.006
+    4300010: Cube.005
+    4300012: Cube.004
+    4300014: Cube.003
+    4300016: Plane
+    4300018: Cube.002
+    4300020: Cube.001
+    4300022: Cube
+    4300024: Cylinder
+    10800000: Lamp
   materials:
     importMaterials: 1
     materialName: 0
@@ -93,7 +147,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
