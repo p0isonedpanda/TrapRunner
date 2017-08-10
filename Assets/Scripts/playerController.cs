@@ -5,20 +5,21 @@ using UnityEngine.UI;
 
 public class playerController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 10.0f;
-    [SerializeField] float sprintSpeed = 15.0f;
-    [SerializeField] float staminaUsageRate = 15.0f;
-    [SerializeField] float staminaRecoveryRate = 20.0f;
-    [SerializeField] float staminaRecoveryCooldown = 2.0f;
-    [SerializeField] float jumpSpeed = 10.0f;
-    [SerializeField] float lookSpeed = 10.0f;
-    [SerializeField] float gravity = 30.0f;
-    [SerializeField] float weaponRange = 100.0f;
-    [SerializeField] float weaponFireRate = 0.1f;
-    [SerializeField] float weaponInaccuracy = 0.0f;
-    [SerializeField] GameObject playerCam, pauseMenu, bulletDecal;
-    [SerializeField] Image staminaBar, outerCrosshair;
-    [SerializeField] LayerMask raycastInclude, terrainLayer, weaponHitLayer;
+    public float moveSpeed = 10.0f;
+    public float sprintSpeed = 15.0f;
+    public float staminaUsageRate = 15.0f;
+    public float staminaRecoveryRate = 20.0f;
+    public float staminaRecoveryCooldown = 2.0f;
+    public float jumpSpeed = 10.0f;
+    public float lookSpeed = 10.0f;
+    public float gravity = 30.0f;
+    public float weaponRange = 100.0f;
+    public float weaponFireRate = 0.1f;
+    public float weaponInaccuracy = 0.0f;
+    public GameObject playerCam, pauseMenu, bulletDecal;
+    public Image staminaBar, outerCrosshair;
+    public LayerMask raycastInclude, terrainLayer, weaponHitLayer;
+
     Vector3 moveDir = Vector3.zero;
     CharacterController charController;
     float mouseYLook = 0.0f;

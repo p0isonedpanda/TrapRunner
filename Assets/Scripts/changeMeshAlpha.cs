@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class changeMeshAlpha : MonoBehaviour
 { 
-    [SerializeField] Material[] mats;
+    public Material[] mats;
 
 	// Update is called once per frame
 	void Update ()

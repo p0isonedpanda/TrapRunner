@@ -5,10 +5,11 @@ using UnityEngine.AI;
 
 public class AINavigation : MonoBehaviour
 {
-    [SerializeField] GameObject pointer;
-    [SerializeField] bool debugAIDestination;
-    [SerializeField] float distCheckPadding = 2.0f;
-    [SerializeField] GameObject aiHitGhost;
+    public GameObject pointer;
+    public bool debugAIDestination;
+    public float distCheckPadding = 2.0f;
+    public GameObject aiHitGhost;
+
     GameObject pointerRef;
     Transform target;
     NavMeshAgent aiAgent;
