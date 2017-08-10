@@ -141,16 +141,14 @@ MonoBehaviour:
   staminaRecoveryRate: 20
   staminaRecoveryCooldown: 2
   jumpSpeed: 10
-  lookSpeed: 100
+  lookSpeedMax: 200
   gravity: 30
   weaponRange: 100
   weaponFireRate: 0.1
   weaponInaccuracy: 0.05
   playerCam: {fileID: 1282659521091768}
-  pauseMenu: {fileID: 0}
-  bulletDecal: {fileID: 0}
-  staminaBar: {fileID: 0}
-  outerCrosshair: {fileID: 0}
+  bulletDecal: {fileID: 1605791570947010, guid: 9444802a54ecf904ab541341c3498ff2,
+    type: 2}
   raycastInclude:
     serializedVersion: 2
     m_Bits: 4294967039

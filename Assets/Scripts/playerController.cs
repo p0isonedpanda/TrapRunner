@@ -11,29 +11,36 @@ public class playerController : MonoBehaviour
     public float staminaRecoveryRate = 20.0f;
     public float staminaRecoveryCooldown = 2.0f;
     public float jumpSpeed = 10.0f;
-    public float lookSpeed = 10.0f;
+    public float lookSpeedMax = 200.0f;
     public float gravity = 30.0f;
     public float weaponRange = 100.0f;
     public float weaponFireRate = 0.1f;
     public float weaponInaccuracy = 0.0f;
-    public GameObject playerCam, pauseMenu, bulletDecal;
-    public Image staminaBar, outerCrosshair;
+    public GameObject playerCam, bulletDecal;
     public LayerMask raycastInclude, terrainLayer, weaponHitLayer;
 
     Vector3 moveDir = Vector3.zero;
     CharacterController charController;
     float mouseYLook = 0.0f;
+    float lookSpeed;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
     float fireRateTimer = 0.0f;
     bool holdingItem = false;
     bool itemDropped = true;
-    GameObject itemHeld;
+    bool invertedLook = false;
+    GameObject itemHeld, pauseMenu;
+    Image staminaBar, outerCrosshair;
 
 	// Use this for initialization
 	void Start()
     {
         charController = GetComponent<CharacterController>();
+        staminaBar = GameObject.Find("stamina").GetComponent<Image>();
+        outerCrosshair = GameObject.Find("outerCrosshair").GetComponent<Image>();
+        pauseMenu = GameObject.Find("pauseMenu");
+        pauseMenu.SetActive(false);
+        lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
 	}
 	
@@ -118,11 +125,22 @@ public class playerController : MonoBehaviour
             charController.transform.eulerAngles.z);
 
         // Rotate the camera on the X axis
-        mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-        mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-        playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
-            playerCam.transform.eulerAngles.y,
-            playerCam.transform.eulerAngles.z);
+        if (!invertedLook)
+        {
+            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+            playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
+                playerCam.transform.eulerAngles.y,
+                playerCam.transform.eulerAngles.z);
+        }
+        else
+        {
+            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+            playerCam.transform.eulerAngles = new Vector3(mouseYLook,
+                playerCam.transform.eulerAngles.y,
+                playerCam.transform.eulerAngles.z);
+        }
 
         RaycastHit pickupRay;
 
@@ -237,5 +255,30 @@ public class playerController : MonoBehaviour
                 Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2), 0);
         else
             return Vector3.forward;
+    }
+
+    // Function to be called when the look sensitivity is changed
+    public void ChangeLookSensitivity()
+    {
+        lookSpeed = GameObject.Find("HUD/pauseMenu/lookSensitivity/lookSensitivitySlider").
+            GetComponent<Slider>().value * lookSpeedMax;
+        GameObject.Find("HUD/pauseMenu/lookSensitivity/value").GetComponent<Text>().
+            text = (Mathf.Floor(lookSpeed) / lookSpeedMax).ToString();
+    }
+
+    // Used to invert Y look
+    public void InvertYLook()
+    {
+        if (GameObject.Find("HUD/pauseMenu/invertY").GetComponent<Toggle>().isOn)
+            invertedLook = true;
+        else
+            invertedLook = false;
+    }
+
+    public void ResumePlay()
+    {
+        Time.timeScale = 1;
+        pauseMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }
