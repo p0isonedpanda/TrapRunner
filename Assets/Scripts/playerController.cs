@@ -29,6 +29,7 @@ public class playerController : MonoBehaviour
     bool holdingItem = false;
     bool itemDropped = true;
     bool invertedLook = false;
+    bool paused = false;
     GameObject itemHeld, pauseMenu;
     Image staminaBar, staminaUsed, outerCrosshair;
 
@@ -48,6 +49,7 @@ public class playerController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+        // Crouching
         if (Input.GetKey(KeyCode.LeftControl))
         {
             charController.height = Mathf.Lerp(charController.height, 1.0f, 0.2f);
@@ -57,7 +59,7 @@ public class playerController : MonoBehaviour
             charController.height = Mathf.Lerp(charController.height, 2.0f, 0.2f);
         }
 
-        if (charController.isGrounded)
+        if (charController.isGrounded) // Make sure we can only move while we are grounded
         {
             if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f) // Sprinting
             {
@@ -90,14 +92,15 @@ public class playerController : MonoBehaviour
                     stamina = 100.0f;
             }
 
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetButtonDown("Jump")) // Jumping
                 moveDir.y = jumpSpeed;
         }
-        else // If we are in the air
+        else // If we are in the air...
         {
             RaycastHit frontCheck;
             Debug.DrawRay(new Vector3(charController.transform.position.x, charController.transform.position.y - 0.8f, charController.transform.position.z), Vector3.forward, Color.red);
 
+            //...check if there's a wall we can climb
             if (Physics.Raycast(new Vector3(charController.transform.position.x,
                 charController.transform.position.y - 0.8f,
                 charController.transform.position.z),
@@ -113,6 +116,7 @@ public class playerController : MonoBehaviour
             }
         }
 
+        // Change stamina bar display to represent remaining stamina
         staminaBar.fillAmount = stamina / 100.0f;
         staminaUsed.fillAmount = 1.0f - staminaBar.fillAmount;
 
@@ -127,21 +131,24 @@ public class playerController : MonoBehaviour
             charController.transform.eulerAngles.z);
 
         // Rotate the camera on the X axis
-        if (!invertedLook)
+        if (!paused)
         {
-            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-            playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
-                playerCam.transform.eulerAngles.y,
-                playerCam.transform.eulerAngles.z);
-        }
-        else
-        {
-            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-            playerCam.transform.eulerAngles = new Vector3(mouseYLook,
-                playerCam.transform.eulerAngles.y,
-                playerCam.transform.eulerAngles.z);
+            if (!invertedLook)
+            {
+                mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+                mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+                playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
+                    playerCam.transform.eulerAngles.y,
+                    playerCam.transform.eulerAngles.z);
+            }
+            else
+            {
+                mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+                mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+                playerCam.transform.eulerAngles = new Vector3(mouseYLook,
+                    playerCam.transform.eulerAngles.y,
+                    playerCam.transform.eulerAngles.z);
+            }
         }
 
         RaycastHit pickupRay;
@@ -208,17 +215,19 @@ public class playerController : MonoBehaviour
         }
 
         // Pause menu
-        if (Time.timeScale != 0 && Input.GetKeyDown(KeyCode.P)) // Pause the game
+        if (!paused && Input.GetKeyDown(KeyCode.P)) // Pause the game
         {
             Time.timeScale = 0;
             pauseMenu.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
+            paused = true;
         }
-        else if (Time.timeScale == 0 && Input.GetKeyDown(KeyCode.P)) // Unpause the game
+        else if (paused && Input.GetKeyDown(KeyCode.P)) // Unpause the game
         {
             Time.timeScale = 1;
             pauseMenu.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
+            paused = false;
         }
 
         // Weapons hit detection
@@ -226,7 +235,7 @@ public class playerController : MonoBehaviour
         fireRateTimer += Time.deltaTime;
 
         // If we're allowed to fire...
-        if (Input.GetKey(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate)
+        if (Input.GetKey(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate && !paused)
         {
             // ...then we want to raycast
             if (Physics.Raycast(playerCam.transform.position,
@@ -251,11 +260,13 @@ public class playerController : MonoBehaviour
     // Used to create inaccuracy when the weapon is shot
     Vector3 GetWeaponInaccuracy(Vector3 center, float radius)
     {
-        float ang = Random.value * 360;
+        float ang = Random.value * 360; // Get angle
         Vector3 pos;
+
+        // Get point in space based on circle
         pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
         pos.y = center.x + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
-        pos.z = center.z;
+        pos.z = center.z; // We only need the coords in 2D space, so z can be left at 0
         return pos;
     }
 
@@ -275,12 +286,16 @@ public class playerController : MonoBehaviour
             invertedLook = true;
         else
             invertedLook = false;
+
+        mouseYLook *= -1; // Here we flip the mouseYlook so that when the setting is changed, the player's view isn't flipped
     }
 
+    // Used to resume play from the pause menu
     public void ResumePlay()
     {
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
+        paused = false;
     }
 }
