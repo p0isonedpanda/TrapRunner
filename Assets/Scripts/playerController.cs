@@ -30,13 +30,14 @@ public class playerController : MonoBehaviour
     bool itemDropped = true;
     bool invertedLook = false;
     GameObject itemHeld, pauseMenu;
-    Image staminaBar, outerCrosshair;
+    Image staminaBar, staminaUsed, outerCrosshair;
 
 	// Use this for initialization
 	void Start()
     {
         charController = GetComponent<CharacterController>();
         staminaBar = GameObject.Find("stamina").GetComponent<Image>();
+        staminaUsed = GameObject.Find("used").GetComponent<Image>();
         outerCrosshair = GameObject.Find("outerCrosshair").GetComponent<Image>();
         pauseMenu = GameObject.Find("pauseMenu");
         pauseMenu.SetActive(false);
@@ -112,7 +113,8 @@ public class playerController : MonoBehaviour
             }
         }
 
-        staminaBar.transform.localScale = new Vector3(stamina / 100.0f, 1.0f, 1.0f);
+        staminaBar.fillAmount = stamina / 100.0f;
+        staminaUsed.fillAmount = 1.0f - staminaBar.fillAmount;
 
         // Apply movement to player
         moveDir.y -= gravity * Time.deltaTime;
@@ -228,7 +230,7 @@ public class playerController : MonoBehaviour
         {
             // ...then we want to raycast
             if (Physics.Raycast(playerCam.transform.position,
-            playerCam.transform.TransformDirection(GetWeaponInaccuracy()),
+            playerCam.transform.TransformDirection(GetWeaponInaccuracy(Vector3.forward, Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2))),
             out weaponRay, weaponRange, weaponHitLayer.value))
             {
                 fireRateTimer = 0.0f;
@@ -247,14 +249,14 @@ public class playerController : MonoBehaviour
     }
 
     // Used to create inaccuracy when the weapon is shot
-    Vector3 GetWeaponInaccuracy()
+    Vector3 GetWeaponInaccuracy(Vector3 center, float radius)
     {
-        if (weaponInaccuracy > 0)
-            return Vector3.forward + new Vector3(
-                Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2),
-                Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2), 0);
-        else
-            return Vector3.forward;
+        float ang = Random.value * 360;
+        Vector3 pos;
+        pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
+        pos.y = center.x + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
+        pos.z = center.z;
+        return pos;
     }
 
     // Function to be called when the look sensitivity is changed
