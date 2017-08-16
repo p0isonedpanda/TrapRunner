@@ -19,7 +19,7 @@ public class weaponBehaviour : MonoBehaviour
     void Start ()
     {
         playerCam = Camera.main.gameObject;
-        gc = GameObject.FindGameObjectsWithTag("GameController")[0].GetComponent<gameController>();
+        gc = gameController.instance;
 	}
 	
 	// Update is called once per frame

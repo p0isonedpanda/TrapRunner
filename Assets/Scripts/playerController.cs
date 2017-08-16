@@ -33,7 +33,7 @@ public class playerController : MonoBehaviour
     void Start()
     {
         charController = GetComponent<CharacterController>();
-        gc = GameObject.FindGameObjectsWithTag("GameController")[0].GetComponent<gameController>();
+        gc = gameController.instance;
         staminaBar = GameObject.Find("stamina").GetComponent<Image>();
         staminaUsed = GameObject.Find("used").GetComponent<Image>();
         outerCrosshair = GameObject.Find("outerCrosshair").GetComponent<Image>();
@@ -72,6 +72,9 @@ public class playerController : MonoBehaviour
                 // Make sure stamina doesn't go lower than 0
                 if (stamina < 0.0f)
                     stamina = 0.0f;
+
+                // Start sprinting animation
+                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("sprinting", true);
             }
             else // Running
             {
@@ -87,6 +90,9 @@ public class playerController : MonoBehaviour
                 // Make sure stamina doesn't go higher than 100
                 if (stamina > 100.0f)
                     stamina = 100.0f;
+
+                // Stop sprinting animation
+                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("sprinting", false);
             }
 
             if (Input.GetButtonDown("Jump")) // Jumping
