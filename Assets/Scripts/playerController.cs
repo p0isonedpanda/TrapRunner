@@ -13,10 +13,7 @@ public class playerController : MonoBehaviour
     public float jumpSpeed = 10.0f;
     public float lookSpeedMax = 200.0f;
     public float gravity = 30.0f;
-    public float weaponRange = 100.0f;
-    public float weaponFireRate = 0.1f;
-    public float weaponInaccuracy = 0.0f;
-    public GameObject playerCam, bulletDecal;
+    public GameObject playerCam;
     public LayerMask raycastInclude, terrainLayer, weaponHitLayer;
 
     Vector3 moveDir = Vector3.zero;
@@ -25,18 +22,18 @@ public class playerController : MonoBehaviour
     float lookSpeed;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
-    float fireRateTimer = 0.0f;
     bool holdingItem = false;
     bool itemDropped = true;
     bool invertedLook = false;
-    bool paused = false;
     GameObject itemHeld, pauseMenu;
     Image staminaBar, staminaUsed, outerCrosshair;
+    gameController gc;
 
-	// Use this for initialization
-	void Start()
+    // Use this for initialization
+    void Start()
     {
         charController = GetComponent<CharacterController>();
+        gc = GameObject.FindGameObjectsWithTag("GameController")[0].GetComponent<gameController>();
         staminaBar = GameObject.Find("stamina").GetComponent<Image>();
         staminaUsed = GameObject.Find("used").GetComponent<Image>();
         outerCrosshair = GameObject.Find("outerCrosshair").GetComponent<Image>();
@@ -44,10 +41,10 @@ public class playerController : MonoBehaviour
         pauseMenu.SetActive(false);
         lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
-	}
-	
-	// Update is called once per frame
-	void Update()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         // Crouching
         if (Input.GetKey(KeyCode.LeftControl))
@@ -94,6 +91,16 @@ public class playerController : MonoBehaviour
 
             if (Input.GetButtonDown("Jump")) // Jumping
                 moveDir.y = jumpSpeed;
+
+            // Start movement animation
+            if (moveDir.x != 0 || moveDir.z != 0)
+            {
+                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("running", true);
+            }
+            else
+            {
+                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("running", false);
+            }
         }
         else // If we are in the air...
         {
@@ -131,7 +138,7 @@ public class playerController : MonoBehaviour
             charController.transform.eulerAngles.z);
 
         // Rotate the camera on the X axis
-        if (!paused)
+        if (!gc.paused)
         {
             if (!invertedLook)
             {
@@ -215,59 +222,20 @@ public class playerController : MonoBehaviour
         }
 
         // Pause menu
-        if (!paused && Input.GetKeyDown(KeyCode.P)) // Pause the game
+        if (!gc.paused && Input.GetKeyDown(KeyCode.P)) // Pause the game
         {
             Time.timeScale = 0;
             pauseMenu.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
-            paused = true;
+            gc.paused = true;
         }
-        else if (paused && Input.GetKeyDown(KeyCode.P)) // Unpause the game
+        else if (gc.paused && Input.GetKeyDown(KeyCode.P)) // Unpause the game
         {
             Time.timeScale = 1;
             pauseMenu.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
-            paused = false;
+            gc.paused = false;
         }
-
-        // Weapons hit detection
-        RaycastHit weaponRay;
-        fireRateTimer += Time.deltaTime;
-
-        // If we're allowed to fire...
-        if (Input.GetKey(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate && !paused)
-        {
-            // ...then we want to raycast
-            if (Physics.Raycast(playerCam.transform.position,
-            playerCam.transform.TransformDirection(GetWeaponInaccuracy(Vector3.forward, Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2))),
-            out weaponRay, weaponRange, weaponHitLayer.value))
-            {
-                fireRateTimer = 0.0f;
-
-                // Check if we hit the enemy AI
-                if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-                {
-                    weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
-                }
-                else // If not, then create a bullet decal
-                {
-                    Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(weaponRay.normal));
-                }
-            }
-        }  
-    }
-
-    // Used to create inaccuracy when the weapon is shot
-    Vector3 GetWeaponInaccuracy(Vector3 center, float radius)
-    {
-        float ang = Random.value * 360; // Get angle
-        Vector3 pos;
-
-        // Get point in space based on circle
-        pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
-        pos.y = center.x + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
-        pos.z = center.z; // We only need the coords in 2D space, so z can be left at 0
-        return pos;
     }
 
     // Function to be called when the look sensitivity is changed
@@ -296,6 +264,6 @@ public class playerController : MonoBehaviour
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
-        paused = false;
+        gc.paused = false;
     }
 }

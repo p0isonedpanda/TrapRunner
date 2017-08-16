@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - crate
+  - weapon
   layers:
   - Default
   - TransparentFX
