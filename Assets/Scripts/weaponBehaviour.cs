@@ -4,16 +4,26 @@ using UnityEngine;
 
 public class weaponBehaviour : MonoBehaviour
 {
-    public float weaponRange = 100.0f;
+    gameController gc;
+
+    [Header("Universal Settings")]
     public float weaponFireRate = 0.1f;
     public float weaponInaccuracy = 0.0f;
     public bool semiAuto;
-    public LayerMask weaponHitLayer;
-    public GameObject bulletDecal;
+    public bool hitscan;
 
     float fireRateTimer = 0.0f;
     GameObject playerCam;
-    gameController gc;
+
+    [Header("Hitscan Settings")]
+    public float weaponRange = 100.0f;
+    public LayerMask weaponHitLayer;
+    public GameObject bulletDecal;
+
+    [Header("Projectile Settings")]
+    public GameObject projectile;
+    public float projectileForce;
+
 
     // Use this for initialization
     void Start ()
@@ -31,7 +41,9 @@ public class weaponBehaviour : MonoBehaviour
         if (semiAuto)
         {
             // If we're allowed to fire...
-            if (Input.GetKeyDown(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate && !gc.paused)
+            if (Input.GetKeyDown(KeyCode.Mouse0)
+                && fireRateTimer >= weaponFireRate
+                && !gc.paused)
             {
                 FireGun();
             }
@@ -39,7 +51,9 @@ public class weaponBehaviour : MonoBehaviour
         else
         {
             // If we're allowed to fire...
-            if (Input.GetKey(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate && !gc.paused)
+            if (Input.GetKey(KeyCode.Mouse0)
+                && fireRateTimer >= weaponFireRate
+                && !gc.paused)
             {
                 FireGun();
             }
@@ -62,25 +76,38 @@ public class weaponBehaviour : MonoBehaviour
 
     void FireGun()
     {
-        // Weapons hit detection
-        RaycastHit weaponRay;
-
-        // Use raycast to check if we hit something
-        if (Physics.Raycast(playerCam.transform.position,
-        playerCam.transform.TransformDirection(GetWeaponInaccuracy(Vector3.forward, Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2))),
-        out weaponRay, weaponRange, weaponHitLayer.value))
+        // Check whether we're firing as hitscan or projectile
+        if (hitscan)
         {
-            fireRateTimer = 0.0f;
+            // Weapons hit detection
+            RaycastHit weaponRay;
+            
+            // Use raycast to check if we hit something
+            if (Physics.Raycast(playerCam.transform.position,
+            playerCam.transform.TransformDirection(GetWeaponInaccuracy(Vector3.forward, Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2))),
+            out weaponRay, weaponRange, weaponHitLayer.value))
+            {
+                fireRateTimer = 0.0f;
+            
+                // Check if we hit the enemy AI
+                if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
+                }
+                else // If not, then create a bullet decal
+                {
+                    Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(weaponRay.normal));
+                }
+            }
+        }
+        else
+        {
+            GameObject firedProj = Instantiate(projectile,
+                Camera.main.transform.position + Camera.main.transform.TransformDirection(Vector3.forward),
+                Quaternion.Euler(Vector3.zero)) as GameObject;
 
-            // Check if we hit the enemy AI
-            if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
-                weaponRay.collider.gameObject.GetComponent<AINavigation>().ApplyDamage(10.0f);
-            }
-            else // If not, then create a bullet decal
-            {
-                Instantiate(bulletDecal, weaponRay.point, Quaternion.Euler(weaponRay.normal));
-            }
+            firedProj.GetComponent<Rigidbody>().
+                AddForce(Camera.main.transform.TransformDirection(Vector3.forward) * projectileForce, ForceMode.Impulse);
         }
     }
 }

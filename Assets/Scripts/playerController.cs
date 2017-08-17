@@ -6,27 +6,39 @@ using UnityEngine.UI;
 public class playerController : MonoBehaviour
 {
     public static playerController instance { get; private set; }
+    gameController gc;
+
+    [Header("Movement")]
     public float moveSpeed = 10.0f;
     public float sprintSpeed = 15.0f;
+    public float jumpSpeed = 10.0f;
+    public float gravity = 30.0f;
+
+    Vector3 moveDir = Vector3.zero;
+
+    [Header("Look")]
+    public GameObject playerCam;
+    public float lookSpeedMax = 200.0f;
+
+    [HideInInspector] public float lookSpeed;
+    [HideInInspector] public float mouseYLook = 0.0f;
+    [HideInInspector] public bool invertedLook = false;
+
+    [Header("Stamina")]
     public float staminaUsageRate = 15.0f;
     public float staminaRecoveryRate = 20.0f;
     public float staminaRecoveryCooldown = 2.0f;
-    public float jumpSpeed = 10.0f;
-    public float lookSpeedMax = 200.0f;
-    public float gravity = 30.0f;
-    public float lookSpeed;
-    public float mouseYLook = 0.0f;
-    public bool invertedLook = false;
-    public GameObject playerCam;
-    public LayerMask raycastInclude, terrainLayer, weaponHitLayer;
 
-    Vector3 moveDir = Vector3.zero;
-    CharacterController charController;
+    Image staminaBar, staminaUsed;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
+
+    [Header("Layers")]
+    public LayerMask raycastInclude;
+    public LayerMask terrainLayer;
+
+    CharacterController charController;
     GameObject pauseMenu;
-    Image staminaBar, staminaUsed;
-    gameController gc;
 
     // Used to initialise singleton
     void Awake()
@@ -45,7 +57,6 @@ public class playerController : MonoBehaviour
         staminaBar = GameObject.Find("stamina").GetComponent<Image>();
         staminaUsed = GameObject.Find("used").GetComponent<Image>();
         pauseMenu = GameObject.Find("pauseMenu");
-        pauseMenu.SetActive(false);
         lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
     }

@@ -24,6 +24,7 @@ public class settingsController : MonoBehaviour
     {
         gc = gameController.instance;
         pc = playerController.instance;
+        gameObject.SetActive(false);
 	}
 
     // Function to be called when the look sensitivity is changed

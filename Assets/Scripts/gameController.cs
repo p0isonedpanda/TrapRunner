@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class gameController : MonoBehaviour
 {
-    public bool paused = false;
     public static gameController instance { get; private set; }
+
+    [HideInInspector] public bool paused = false;
 
     // Used to initialise singleton
     void Awake ()
