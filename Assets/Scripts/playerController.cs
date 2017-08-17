@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class playerController : MonoBehaviour
 {
+    public static playerController instance { get; private set; }
     public float moveSpeed = 10.0f;
     public float sprintSpeed = 15.0f;
     public float staminaUsageRate = 15.0f;
@@ -13,21 +14,28 @@ public class playerController : MonoBehaviour
     public float jumpSpeed = 10.0f;
     public float lookSpeedMax = 200.0f;
     public float gravity = 30.0f;
+    public float lookSpeed;
+    public float mouseYLook = 0.0f;
+    public bool invertedLook = false;
     public GameObject playerCam;
     public LayerMask raycastInclude, terrainLayer, weaponHitLayer;
 
     Vector3 moveDir = Vector3.zero;
     CharacterController charController;
-    float mouseYLook = 0.0f;
-    float lookSpeed;
     float stamina = 100.0f;
     float staminaRecoveryTimer = 0.0f;
-    bool holdingItem = false;
-    bool itemDropped = true;
-    bool invertedLook = false;
-    GameObject itemHeld, pauseMenu;
-    Image staminaBar, staminaUsed, outerCrosshair;
+    GameObject pauseMenu;
+    Image staminaBar, staminaUsed;
     gameController gc;
+
+    // Used to initialise singleton
+    void Awake()
+    {
+        if (instance != null)
+            throw new System.Exception();
+
+        instance = this;
+    }
 
     // Use this for initialization
     void Start()
@@ -36,7 +44,6 @@ public class playerController : MonoBehaviour
         gc = gameController.instance;
         staminaBar = GameObject.Find("stamina").GetComponent<Image>();
         staminaUsed = GameObject.Find("used").GetComponent<Image>();
-        outerCrosshair = GameObject.Find("outerCrosshair").GetComponent<Image>();
         pauseMenu = GameObject.Find("pauseMenu");
         pauseMenu.SetActive(false);
         lookSpeed = lookSpeedMax / 2;
@@ -144,87 +151,21 @@ public class playerController : MonoBehaviour
             charController.transform.eulerAngles.z);
 
         // Rotate the camera on the X axis
-        if (!gc.paused)
+        if (!invertedLook)
         {
-            if (!invertedLook)
-            {
-                mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-                mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-                playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
-                    playerCam.transform.eulerAngles.y,
-                    playerCam.transform.eulerAngles.z);
-            }
-            else
-            {
-                mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-                mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-                playerCam.transform.eulerAngles = new Vector3(mouseYLook,
-                    playerCam.transform.eulerAngles.y,
-                    playerCam.transform.eulerAngles.z);
-            }
-        }
-
-        RaycastHit pickupRay;
-
-        if (Physics.Raycast(playerCam.transform.position,
-            playerCam.transform.TransformDirection(Vector3.forward),
-            out pickupRay, 2.0f, raycastInclude.value))
-        {
-            // If we see something we can pickup, we want to make the outer crosshair visible
-            switch (pickupRay.collider.tag)
-            {
-                case "crate":
-                    outerCrosshair.color = new Vector4(outerCrosshair.color.r,
-                        outerCrosshair.color.g,
-                        outerCrosshair.color.b,
-                        Mathf.Lerp(outerCrosshair.color.a, 1.0f, 0.3f));
-
-                    if (Input.GetKeyDown(KeyCode.E) && !holdingItem)
-                    {
-                        holdingItem = true;
-                        itemDropped = false;
-                        itemHeld = pickupRay.collider.gameObject;
-                    }
-                    break;
-
-                default: // If we can't pick it up, fade out outer crosshair
-                    outerCrosshair.color = new Vector4(outerCrosshair.color.r,
-                        outerCrosshair.color.g,
-                        outerCrosshair.color.b,
-                        Mathf.Lerp(outerCrosshair.color.a, 0.0f, 0.3f));
-                    break;
-            }
+            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+            playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
+                playerCam.transform.eulerAngles.y,
+                playerCam.transform.eulerAngles.z);
         }
         else
         {
-            // If we don't have any pickups in range, fade out outer crosshair
-            outerCrosshair.color = new Vector4(outerCrosshair.color.r,
-                    outerCrosshair.color.g,
-                    outerCrosshair.color.b,
-                    Mathf.Lerp(outerCrosshair.color.a, 0.0f, 0.3f));
-        }
-
-        if (holdingItem)
-        {
-            // If we're holding an item, we need to parent it to the camera and place it in front
-            itemHeld.transform.SetParent(playerCam.transform);
-            itemHeld.transform.localPosition = new Vector3(0, 0, 1.5f);
-            itemHeld.transform.localEulerAngles = Vector3.zero;
-            if (Input.GetKeyDown(KeyCode.Mouse0)) // Check if we want to drop it
-            {
-                holdingItem = false;
-            }
-        }
-        else
-        {
-            // When we drop the item, make sure it has no velocity
-            if (!itemDropped)
-            {
-                playerCam.transform.DetachChildren();
-                itemHeld.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                itemHeld.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-                itemDropped = true;
-            }
+            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
+            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+            playerCam.transform.eulerAngles = new Vector3(mouseYLook,
+                playerCam.transform.eulerAngles.y,
+                playerCam.transform.eulerAngles.z);
         }
 
         // Pause menu
@@ -242,34 +183,5 @@ public class playerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             gc.paused = false;
         }
-    }
-
-    // Function to be called when the look sensitivity is changed
-    public void ChangeLookSensitivity()
-    {
-        lookSpeed = GameObject.Find("HUD/pauseMenu/lookSensitivity/lookSensitivitySlider").
-            GetComponent<Slider>().value * lookSpeedMax;
-        GameObject.Find("HUD/pauseMenu/lookSensitivity/value").GetComponent<Text>().
-            text = (Mathf.Floor(lookSpeed) / lookSpeedMax).ToString();
-    }
-
-    // Used to invert Y look
-    public void InvertYLook()
-    {
-        if (GameObject.Find("HUD/pauseMenu/invertY").GetComponent<Toggle>().isOn)
-            invertedLook = true;
-        else
-            invertedLook = false;
-
-        mouseYLook *= -1; // Here we flip the mouseYlook so that when the setting is changed, the player's view isn't flipped
-    }
-
-    // Used to resume play from the pause menu
-    public void ResumePlay()
-    {
-        Time.timeScale = 1;
-        pauseMenu.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        gc.paused = false;
     }
 }

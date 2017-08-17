@@ -30,21 +30,17 @@ public class weaponBehaviour : MonoBehaviour
         // Check if the gun is semi automatic
         if (semiAuto)
         {
-            Debug.Log("Semi auto");
             // If we're allowed to fire...
             if (Input.GetKeyDown(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate && !gc.paused)
             {
-                Debug.Log("Firing semi auto");
                 FireGun();
             }
         }
         else
         {
-            Debug.Log("Auto");
             // If we're allowed to fire...
             if (Input.GetKey(KeyCode.Mouse0) && fireRateTimer >= weaponFireRate && !gc.paused)
             {
-                Debug.Log("Firing auto");
                 FireGun();
             }
         }
