@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1011,6 +1011,21 @@ Prefab:
     - target: {fileID: 4824991000869878, guid: c3c03d7403535d24589e79ddd2a3f209, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20904465435902788, guid: c3c03d7403535d24589e79ddd2a3f209,
+        type: 2}
+      propertyPath: m_CullingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 20904465435902788, guid: c3c03d7403535d24589e79ddd2a3f209,
+        type: 2}
+      propertyPath: m_Depth
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20904465435902788, guid: c3c03d7403535d24589e79ddd2a3f209,
+        type: 2}
+      propertyPath: m_RenderingPath
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c3c03d7403535d24589e79ddd2a3f209, type: 2}
@@ -2431,6 +2446,14 @@ Prefab:
     - target: {fileID: 100002, guid: 738889aec4ed9194baceab3dad59c571, type: 3}
       propertyPath: m_TagString
       value: weapon
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 738889aec4ed9194baceab3dad59c571, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 738889aec4ed9194baceab3dad59c571, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 738889aec4ed9194baceab3dad59c571, type: 3}

@@ -104,7 +104,7 @@ public class weaponBehaviour : MonoBehaviour
         {
             GameObject firedProj = Instantiate(projectile,
                 Camera.main.transform.position + Camera.main.transform.TransformDirection(Vector3.forward),
-                Quaternion.Euler(Vector3.zero)) as GameObject;
+                Camera.main.transform.rotation) as GameObject;
 
             firedProj.GetComponent<Rigidbody>().
                 AddForce(Camera.main.transform.TransformDirection(Vector3.forward) * projectileForce, ForceMode.Impulse);
