@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4580127829792848}
   - component: {fileID: 33039487826970778}
   - component: {fileID: 23696092116363534}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,8 @@ GameObject:
   - component: {fileID: 4967039486932114}
   - component: {fileID: 54933398784206352}
   - component: {fileID: 135065352999261072}
-  m_Layer: 0
+  - component: {fileID: 114934872660168896}
+  m_Layer: 12
   m_Name: BOMBZZZZ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,6 +129,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &114934872660168896
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442083782019690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7fa3396846b5a9469c0d4dd320e9560, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shattered: {fileID: 1775777502799228, guid: a4554fbaf8728874286fd4d2455a46c7, type: 2}
 --- !u!135 &135065352999261072
 SphereCollider:
   m_ObjectHideFlags: 1

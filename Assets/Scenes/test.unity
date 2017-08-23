@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponFireRate: 0.1
   weaponInaccuracy: 0.1
-  semiAuto: 1
+  semiAuto: 0
   hitscan: 0
   weaponRange: 100
   weaponHitLayer:
@@ -1027,6 +1027,10 @@ Prefab:
       propertyPath: m_RenderingPath
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 1194637469757842, guid: c3c03d7403535d24589e79ddd2a3f209, type: 2}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c3c03d7403535d24589e79ddd2a3f209, type: 2}
   m_IsPrefabParent: 0
@@ -1681,6 +1685,7 @@ GameObject:
   - component: {fileID: 1111219670}
   - component: {fileID: 1111219669}
   - component: {fileID: 1111219668}
+  - component: {fileID: 1111219671}
   m_Layer: 0
   m_Name: HUD
   m_TagString: Untagged
@@ -1748,6 +1753,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1111219671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1111219667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515de1a948b7e51478deaf8c71dcb958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staminaBar: {fileID: 234661762}
+  staminaUsed: {fileID: 893934241}
 --- !u!1 &1113475968
 GameObject:
   m_ObjectHideFlags: 0

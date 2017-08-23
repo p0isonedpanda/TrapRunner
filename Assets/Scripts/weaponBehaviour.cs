@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class weaponBehaviour : MonoBehaviour
 {
@@ -23,7 +21,6 @@ public class weaponBehaviour : MonoBehaviour
     [Header("Projectile Settings")]
     public GameObject projectile;
     public float projectileForce;
-
 
     // Use this for initialization
     void Start ()
@@ -76,6 +73,8 @@ public class weaponBehaviour : MonoBehaviour
 
     void FireGun()
     {
+        fireRateTimer = 0.0f;
+
         // Check whether we're firing as hitscan or projectile
         if (hitscan)
         {
@@ -87,7 +86,6 @@ public class weaponBehaviour : MonoBehaviour
             playerCam.transform.TransformDirection(GetWeaponInaccuracy(Vector3.forward, Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2))),
             out weaponRay, weaponRange, weaponHitLayer.value))
             {
-                fireRateTimer = 0.0f;
             
                 // Check if we hit the enemy AI
                 if (weaponRay.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))

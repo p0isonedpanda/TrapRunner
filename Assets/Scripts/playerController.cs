@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class playerController : MonoBehaviour
@@ -19,18 +17,18 @@ public class playerController : MonoBehaviour
     [Header("Look")]
     public GameObject playerCam;
     public float lookSpeedMax = 200.0f;
-
     [HideInInspector] public float lookSpeed;
     [HideInInspector] public float mouseYLook = 0.0f;
     [HideInInspector] public bool invertedLook = false;
+
 
     [Header("Stamina")]
     public float staminaUsageRate = 15.0f;
     public float staminaRecoveryRate = 20.0f;
     public float staminaRecoveryCooldown = 2.0f;
+    [HideInInspector] public float stamina = 100.0f;
 
-    Image staminaBar, staminaUsed;
-    float stamina = 100.0f;
+    //Image staminaBar, staminaUsed;
     float staminaRecoveryTimer = 0.0f;
 
     [Header("Layers")]
@@ -39,6 +37,8 @@ public class playerController : MonoBehaviour
 
     CharacterController charController;
     GameObject pauseMenu;
+    Animator firstPersonAnim;
+
 
     // Used to initialise singleton
     void Awake()
@@ -54,11 +54,10 @@ public class playerController : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         gc = gameController.instance;
-        staminaBar = GameObject.Find("stamina").GetComponent<Image>();
-        staminaUsed = GameObject.Find("used").GetComponent<Image>();
         pauseMenu = GameObject.Find("pauseMenu");
         lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
+        firstPersonAnim = GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -92,7 +91,7 @@ public class playerController : MonoBehaviour
                     stamina = 0.0f;
 
                 // Start sprinting animation
-                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("sprinting", true);
+                firstPersonAnim.SetBool("sprinting", true);
             }
             else // Running
             {
@@ -110,7 +109,7 @@ public class playerController : MonoBehaviour
                     stamina = 100.0f;
 
                 // Stop sprinting animation
-                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("sprinting", false);
+                firstPersonAnim.SetBool("sprinting", false);
             }
 
             if (Input.GetButtonDown("Jump")) // Jumping
@@ -119,11 +118,11 @@ public class playerController : MonoBehaviour
             // Start movement animation
             if (moveDir.x != 0 || moveDir.z != 0)
             {
-                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("running", true);
+                firstPersonAnim.SetBool("running", true);
             }
             else
             {
-                GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>().SetBool("running", false);
+                firstPersonAnim.SetBool("running", false);
             }
         }
         else // If we are in the air...
@@ -146,10 +145,6 @@ public class playerController : MonoBehaviour
 
             }
         }
-
-        // Change stamina bar display to represent remaining stamina
-        staminaBar.fillAmount = stamina / 100.0f;
-        staminaUsed.fillAmount = 1.0f - staminaBar.fillAmount;
 
         // Apply movement to player
         moveDir.y -= gravity * Time.deltaTime;
