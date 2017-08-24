@@ -18,21 +18,27 @@ public class playerController : MonoBehaviour
     public GameObject playerCam;
     public float lookSpeedMax = 200.0f;
     [HideInInspector] public float lookSpeed;
-    [HideInInspector] public float mouseYLook = 0.0f;
+    [HideInInspector] public float mouseYLook;
     [HideInInspector] public bool invertedLook = false;
 
+    [Header("Health")]
+    [HideInInspector]public float health;
+    public float maxHealth;
+    public float healthRegenRate = 1.0f;
+    public float healthRegenCooldown = 5.0f;
+
+    float healthRegenTimer;
 
     [Header("Stamina")]
+    [HideInInspector] public float stamina;
+    public float maxStamina;
     public float staminaUsageRate = 15.0f;
     public float staminaRecoveryRate = 20.0f;
     public float staminaRecoveryCooldown = 2.0f;
-    [HideInInspector] public float stamina = 100.0f;
 
-    //Image staminaBar, staminaUsed;
-    float staminaRecoveryTimer = 0.0f;
+    float staminaRecoveryTimer;
 
     [Header("Layers")]
-    public LayerMask raycastInclude;
     public LayerMask terrainLayer;
 
     CharacterController charController;
@@ -58,17 +64,30 @@ public class playerController : MonoBehaviour
         lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
         firstPersonAnim = GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>();
+        stamina = maxStamina;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Health regen
+        healthRegenTimer += Time.deltaTime;
+
+        if (healthRegenTimer >= healthRegenCooldown)
+        {
+            health = Mathf.Clamp(health + healthRegenRate * Time.deltaTime, 0.0f, maxHealth);
+        }
+
+        // Just to test the health system
+        if (Input.GetKeyDown(KeyCode.RightControl))
+            ApplyDamage(10.0f);
+
         // Crouching
         if (Input.GetKey(KeyCode.LeftControl))
         {
             charController.height = Mathf.Lerp(charController.height, 1.0f, 0.2f);
         }
-        else
+        else if (!Physics.Raycast(transform.position, Vector3.up, 1.0f, terrainLayer)) // Check if we can uncrouch
         {
             charController.height = Mathf.Lerp(charController.height, 2.0f, 0.2f);
         }
@@ -82,13 +101,9 @@ public class playerController : MonoBehaviour
                 // Make sure we're moving before consuming stamina
                 if (moveDir != Vector3.zero)
                 {
-                    stamina -= staminaUsageRate * Time.deltaTime; // Consume stamina while sprinting
+                    stamina = Mathf.Clamp(stamina - staminaUsageRate * Time.deltaTime, 0.0f, maxStamina);
                     staminaRecoveryTimer = 0.0f;
                 }
-
-                // Make sure stamina doesn't go lower than 0
-                if (stamina < 0.0f)
-                    stamina = 0.0f;
 
                 // Start sprinting animation
                 firstPersonAnim.SetBool("sprinting", true);
@@ -101,12 +116,8 @@ public class playerController : MonoBehaviour
                 // If we've hit the stamina cooldown time, then start to regen stamina
                 if (staminaRecoveryTimer >= staminaRecoveryCooldown && stamina < 100.0f)
                 {
-                    stamina += staminaRecoveryRate * Time.deltaTime;
+                    stamina = Mathf.Clamp(stamina + staminaRecoveryRate * Time.deltaTime, 0.0f, maxStamina);
                 }
-
-                // Make sure stamina doesn't go higher than 100
-                if (stamina > 100.0f)
-                    stamina = 100.0f;
 
                 // Stop sprinting animation
                 firstPersonAnim.SetBool("sprinting", false);
@@ -127,6 +138,12 @@ public class playerController : MonoBehaviour
         }
         else // If we are in the air...
         {
+            if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f && moveDir != Vector3.zero)
+            {
+                stamina = Mathf.Clamp(stamina - staminaUsageRate * Time.deltaTime, 0.0f, maxStamina);
+                staminaRecoveryTimer = 0.0f;
+            }
+
             RaycastHit frontCheck;
             Debug.DrawRay(new Vector3(charController.transform.position.x, charController.transform.position.y - 0.8f, charController.transform.position.z), Vector3.forward, Color.red);
 
@@ -140,7 +157,7 @@ public class playerController : MonoBehaviour
                 if (Input.GetButtonDown("Jump") && stamina > 20.0f)
                 {
                     moveDir.y = jumpSpeed;
-                    stamina -= 20.0f;
+                    stamina = Mathf.Clamp(stamina - 20.0f, 0.0f, maxStamina);
                 }
 
             }
@@ -189,5 +206,11 @@ public class playerController : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             gc.paused = false;
         }
+    }
+
+    public void ApplyDamage (float damage)
+    {
+        health = Mathf.Clamp(health - damage, 0.0f, 100.0f);
+        healthRegenTimer = 0.0f;
     }
 }

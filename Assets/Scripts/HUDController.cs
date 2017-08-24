@@ -9,6 +9,9 @@ public class HUDController : MonoBehaviour
     public Image staminaBar;
     public Image staminaUsed;
 
+    [Header("Health")]
+    public Slider healthBar;
+
     // Use this for initialization
     void Start ()
     {
@@ -19,7 +22,10 @@ public class HUDController : MonoBehaviour
 	void Update ()
     {
         // Change stamina bar display to represent remaining stamina
-        staminaBar.fillAmount = pc.stamina / 100.0f;
+        staminaBar.fillAmount = pc.stamina / pc.maxStamina;
         staminaUsed.fillAmount = 1.0f - staminaBar.fillAmount;
+
+        // Change health bar display to represent remaining stamina
+        healthBar.value = pc.health / pc.maxHealth;
     }
 }
