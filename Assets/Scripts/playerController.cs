@@ -11,6 +11,7 @@ public class playerController : MonoBehaviour
     public float sprintSpeed = 15.0f;
     public float jumpSpeed = 10.0f;
     public float gravity = 30.0f;
+    [HideInInspector] public bool trapped;
 
     Vector3 moveDir = Vector3.zero;
 
@@ -165,7 +166,8 @@ public class playerController : MonoBehaviour
 
         // Apply movement to player
         moveDir.y -= gravity * Time.deltaTime;
-        charController.Move(moveDir * Time.deltaTime);
+        if (!trapped)
+            charController.Move(moveDir * Time.deltaTime);
 
         // Rotate the player on the Y axis
         charController.transform.rotation = Quaternion.Euler(

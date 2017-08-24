@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 54933398784206352}
   - component: {fileID: 135065352999261072}
   - component: {fileID: 114934872660168896}
+  - component: {fileID: 75051745346426444}
   m_Layer: 12
   m_Name: BOMBZZZZ
   m_TagString: Untagged
@@ -129,6 +130,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!75 &75051745346426444
+ConstantForce:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1442083782019690}
+  m_Enabled: 1
+  m_Force: {x: 0, y: 0, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &114934872660168896
 MonoBehaviour:
   m_ObjectHideFlags: 1

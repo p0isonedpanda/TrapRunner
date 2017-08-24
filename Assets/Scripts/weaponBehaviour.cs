@@ -106,6 +106,7 @@ public class weaponBehaviour : MonoBehaviour
 
             firedProj.GetComponent<Rigidbody>().
                 AddForce(Camera.main.transform.TransformDirection(Vector3.forward) * projectileForce, ForceMode.Impulse);
+            firedProj.GetComponent<ConstantForce>().torque = new Vector3(Random.Range(-90, 90), Random.Range(-90, 90), Random.Range(-90, 90));
         }
     }
 }
