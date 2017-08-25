@@ -61,7 +61,7 @@ public class playerController : MonoBehaviour
     {
         charController = GetComponent<CharacterController>();
         gc = gameController.instance;
-        pauseMenu = GameObject.Find("pauseMenu");
+        pauseMenu = settingsController.instance.gameObject;
         lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
         firstPersonAnim = GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>();

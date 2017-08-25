@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class settingsController : MonoBehaviour
 {
     public static settingsController instance { get; private set; }
-
+    
     gameController gc;
     playerController pc;
 
@@ -54,5 +54,11 @@ public class settingsController : MonoBehaviour
         gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         gc.paused = false;
+    }
+
+    // Quit game
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
