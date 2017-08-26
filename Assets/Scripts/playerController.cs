@@ -71,126 +71,129 @@ public class playerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Health regen
-        healthRegenTimer += Time.deltaTime;
-
-        if (healthRegenTimer >= healthRegenCooldown)
+        if (!gc.paused)
         {
-            health = Mathf.Clamp(health + healthRegenRate * Time.deltaTime, 0.0f, maxHealth);
-        }
-
-        // Just to test the health system
-        if (Input.GetKeyDown(KeyCode.RightControl))
-            ApplyDamage(10.0f);
-
-        // Crouching
-        if (Input.GetKey(KeyCode.LeftControl))
-        {
-            charController.height = Mathf.Lerp(charController.height, 1.0f, 0.2f);
-        }
-        else if (!Physics.Raycast(transform.position, Vector3.up, 1.0f, terrainLayer)) // Check if we can uncrouch
-        {
-            charController.height = Mathf.Lerp(charController.height, 2.0f, 0.2f);
-        }
-
-        if (charController.isGrounded) // Make sure we can only move while we are grounded
-        {
-            if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f) // Sprinting
+            // Health regen
+            healthRegenTimer += Time.fixedDeltaTime;
+    
+            if (healthRegenTimer >= healthRegenCooldown)
             {
-                moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"))) * sprintSpeed;
-
-                // Make sure we're moving before consuming stamina
-                if (moveDir != Vector3.zero)
+                health = Mathf.Clamp(health + healthRegenRate * Time.fixedDeltaTime, 0.0f, maxHealth);
+            }
+    
+            // Just to test the health system
+            if (Input.GetKeyDown(KeyCode.RightControl))
+                ApplyDamage(10.0f);
+    
+            // Crouching
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                charController.height = Mathf.Lerp(charController.height, 1.0f, 0.2f);
+            }
+            else if (!Physics.Raycast(transform.position, Vector3.up, 1.0f, terrainLayer)) // Check if we can uncrouch
+            {
+                charController.height = Mathf.Lerp(charController.height, 2.0f, 0.2f);
+            }
+    
+            if (charController.isGrounded) // Make sure we can only move while we are grounded
+            {
+                if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f) // Sprinting
                 {
-                    stamina = Mathf.Clamp(stamina - staminaUsageRate * Time.deltaTime, 0.0f, maxStamina);
+                    moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"))) * sprintSpeed;
+    
+                    // Make sure we're moving before consuming stamina
+                    if (moveDir != Vector3.zero)
+                    {
+                        stamina = Mathf.Clamp(stamina - staminaUsageRate * Time.fixedDeltaTime, 0.0f, maxStamina);
+                        staminaRecoveryTimer = 0.0f;
+                    }
+    
+                    // Start sprinting animation
+                    firstPersonAnim.SetBool("sprinting", true);
+                }
+                else // Running
+                {
+                    moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"))) * moveSpeed;
+                    staminaRecoveryTimer += Time.fixedDeltaTime;
+    
+                    // If we've hit the stamina cooldown time, then start to regen stamina
+                    if (staminaRecoveryTimer >= staminaRecoveryCooldown && stamina < 100.0f)
+                    {
+                        stamina = Mathf.Clamp(stamina + staminaRecoveryRate * Time.fixedDeltaTime, 0.0f, maxStamina);
+                    }
+    
+                    // Stop sprinting animation
+                    firstPersonAnim.SetBool("sprinting", false);
+                }
+    
+                if (Input.GetButtonDown("Jump")) // Jumping
+                    moveDir.y = jumpSpeed;
+    
+                // Start movement animation
+                if (moveDir.x != 0 || moveDir.z != 0)
+                {
+                    firstPersonAnim.SetBool("running", true);
+                }
+                else
+                {
+                    firstPersonAnim.SetBool("running", false);
+                }
+            }
+            else // If we are in the air...
+            {
+                if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f && moveDir != Vector3.zero)
+                {
+                    stamina = Mathf.Clamp(stamina - staminaUsageRate * Time.fixedDeltaTime, 0.0f, maxStamina);
                     staminaRecoveryTimer = 0.0f;
                 }
-
-                // Start sprinting animation
-                firstPersonAnim.SetBool("sprinting", true);
-            }
-            else // Running
-            {
-                moveDir = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"))) * moveSpeed;
-                staminaRecoveryTimer += Time.deltaTime;
-
-                // If we've hit the stamina cooldown time, then start to regen stamina
-                if (staminaRecoveryTimer >= staminaRecoveryCooldown && stamina < 100.0f)
+    
+                RaycastHit frontCheck;
+                Debug.DrawRay(new Vector3(charController.transform.position.x, charController.transform.position.y - 0.8f, charController.transform.position.z), Vector3.forward, Color.red);
+    
+                //...check if there's a wall we can climb
+                if (Physics.Raycast(new Vector3(charController.transform.position.x,
+                    charController.transform.position.y - 0.8f,
+                    charController.transform.position.z),
+                    playerCam.transform.TransformDirection(Vector3.forward),
+                    out frontCheck, 1.0f, terrainLayer.value))
                 {
-                    stamina = Mathf.Clamp(stamina + staminaRecoveryRate * Time.deltaTime, 0.0f, maxStamina);
+                    if (Input.GetButtonDown("Jump") && stamina > 20.0f)
+                    {
+                        moveDir.y = jumpSpeed;
+                        stamina = Mathf.Clamp(stamina - 20.0f, 0.0f, maxStamina);
+                    }
+    
                 }
-
-                // Stop sprinting animation
-                firstPersonAnim.SetBool("sprinting", false);
             }
-
-            if (Input.GetButtonDown("Jump")) // Jumping
-                moveDir.y = jumpSpeed;
-
-            // Start movement animation
-            if (moveDir.x != 0 || moveDir.z != 0)
+    
+            // Apply movement to player
+            moveDir.y -= gravity * Time.fixedDeltaTime;
+            if (!trapped)
+                charController.Move(moveDir * Time.fixedDeltaTime);
+    
+            // Rotate the player on the Y axis
+            charController.transform.rotation = Quaternion.Euler(
+                charController.transform.eulerAngles.x,
+                charController.transform.eulerAngles.y + (Input.GetAxis("Mouse X") * lookSpeed * Time.fixedDeltaTime),
+                charController.transform.eulerAngles.z);
+    
+            // Rotate the camera on the X axis
+            if (!invertedLook)
             {
-                firstPersonAnim.SetBool("running", true);
+                mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.fixedDeltaTime;
+                mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+                playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
+                    playerCam.transform.eulerAngles.y,
+                    playerCam.transform.eulerAngles.z);
             }
             else
             {
-                firstPersonAnim.SetBool("running", false);
+                mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.fixedDeltaTime;
+                mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
+                playerCam.transform.eulerAngles = new Vector3(mouseYLook,
+                    playerCam.transform.eulerAngles.y,
+                    playerCam.transform.eulerAngles.z);
             }
-        }
-        else // If we are in the air...
-        {
-            if (Input.GetKey(KeyCode.LeftShift) && stamina > 0.0f && moveDir != Vector3.zero)
-            {
-                stamina = Mathf.Clamp(stamina - staminaUsageRate * Time.deltaTime, 0.0f, maxStamina);
-                staminaRecoveryTimer = 0.0f;
-            }
-
-            RaycastHit frontCheck;
-            Debug.DrawRay(new Vector3(charController.transform.position.x, charController.transform.position.y - 0.8f, charController.transform.position.z), Vector3.forward, Color.red);
-
-            //...check if there's a wall we can climb
-            if (Physics.Raycast(new Vector3(charController.transform.position.x,
-                charController.transform.position.y - 0.8f,
-                charController.transform.position.z),
-                playerCam.transform.TransformDirection(Vector3.forward),
-                out frontCheck, 1.0f, terrainLayer.value))
-            {
-                if (Input.GetButtonDown("Jump") && stamina > 20.0f)
-                {
-                    moveDir.y = jumpSpeed;
-                    stamina = Mathf.Clamp(stamina - 20.0f, 0.0f, maxStamina);
-                }
-
-            }
-        }
-
-        // Apply movement to player
-        moveDir.y -= gravity * Time.deltaTime;
-        if (!trapped)
-            charController.Move(moveDir * Time.deltaTime);
-
-        // Rotate the player on the Y axis
-        charController.transform.rotation = Quaternion.Euler(
-            charController.transform.eulerAngles.x,
-            charController.transform.eulerAngles.y + (Input.GetAxis("Mouse X") * lookSpeed * Time.deltaTime),
-            charController.transform.eulerAngles.z);
-
-        // Rotate the camera on the X axis
-        if (!invertedLook)
-        {
-            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-            playerCam.transform.eulerAngles = new Vector3(-mouseYLook,
-                playerCam.transform.eulerAngles.y,
-                playerCam.transform.eulerAngles.z);
-        }
-        else
-        {
-            mouseYLook += Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
-            mouseYLook = Mathf.Clamp(mouseYLook, -90.0f, 90.0f);
-            playerCam.transform.eulerAngles = new Vector3(mouseYLook,
-                playerCam.transform.eulerAngles.y,
-                playerCam.transform.eulerAngles.z);
         }
 
         // Pause menu

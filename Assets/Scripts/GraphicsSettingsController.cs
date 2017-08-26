@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GraphicsSettingsController : MonoBehaviour
 {
     public static GraphicsSettingsController instance { get; private set; }
     
 	settingsController sc;
+
+	public Toggle vsyncToggle;
 
 	// Used to initialise singleton
     void Awake()
@@ -23,16 +26,18 @@ public class GraphicsSettingsController : MonoBehaviour
 		sc = settingsController.instance;
 		gameObject.SetActive(false);
 	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		
-	}
 
 	public void CloseGraphicsSettings()
 	{
         sc.gameObject.SetActive(true);
 		gameObject.SetActive(false);
+	}
+
+	public void ChangeVSync()
+	{
+        if (vsyncToggle.isOn)
+	        QualitySettings.vSyncCount = 1;
+		else
+		    QualitySettings.vSyncCount = 0;
 	}
 }

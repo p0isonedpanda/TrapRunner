@@ -33,7 +33,7 @@ public class weaponBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        fireRateTimer += Time.deltaTime;
+        fireRateTimer += Time.fixedDeltaTime;
 
         // Check if the gun is semi automatic
         if (semiAuto)
