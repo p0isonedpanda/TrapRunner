@@ -9,6 +9,7 @@ public class settingsController : MonoBehaviour
     
     gameController gc;
     playerController pc;
+    GraphicsSettingsController gsc;
 
     // Used to initialise singleton
     void Awake()
@@ -24,6 +25,7 @@ public class settingsController : MonoBehaviour
     {
         gc = gameController.instance;
         pc = playerController.instance;
+        gsc = GraphicsSettingsController.instance;
         gameObject.SetActive(false);
 	}
 
@@ -60,5 +62,11 @@ public class settingsController : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public void OpenGraphicsSettings ()
+    {
+        gsc.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 }

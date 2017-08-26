@@ -8,9 +8,9 @@ public class MainMenuController : MonoBehaviour
 {
 	public Slider loadingBar;
 
-    public void StartGame()
+    public void StartGame(string levelName)
 	{
-        StartCoroutine(StartLoadLevel("test"));
+            StartCoroutine(StartLoadLevel(levelName));
 	}
 
 	public void ExitGame ()
@@ -25,7 +25,6 @@ public class MainMenuController : MonoBehaviour
 		{
 			float progress = Mathf.Clamp01(operation.progress / 0.9f);
 			loadingBar.value = progress;
-			Debug.Log(progress);
 			
 			yield return null;
 		}

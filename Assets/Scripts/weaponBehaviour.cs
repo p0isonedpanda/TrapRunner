@@ -21,6 +21,7 @@ public class weaponBehaviour : MonoBehaviour
     [Header("Projectile Settings")]
     public GameObject projectile;
     public float projectileForce;
+    public bool randomTourque;
 
     // Use this for initialization
     void Start ()
@@ -105,8 +106,11 @@ public class weaponBehaviour : MonoBehaviour
                 Camera.main.transform.rotation) as GameObject;
 
             firedProj.GetComponent<Rigidbody>().
-                AddForce(Camera.main.transform.TransformDirection(Vector3.forward) * projectileForce, ForceMode.Impulse);
-            firedProj.GetComponent<ConstantForce>().torque = new Vector3(Random.Range(-90, 90), Random.Range(-90, 90), Random.Range(-90, 90));
+                AddForce(Camera.main.transform.TransformDirection(
+                    GetWeaponInaccuracy(Vector3.forward, Random.Range(-weaponInaccuracy / 2, weaponInaccuracy / 2)))
+                    * projectileForce, ForceMode.Impulse);
+            if (randomTourque)
+                firedProj.GetComponent<ConstantForce>().torque = new Vector3(Random.Range(-90, 90), Random.Range(-90, 90), Random.Range(-90, 90));
         }
     }
 }
