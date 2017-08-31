@@ -9,7 +9,7 @@ public class GraphicsSettingsController : MonoBehaviour
     
 	settingsController sc;
 
-	public Toggle vsyncToggle, anisotropicFilteringToggle;
+	public Toggle vsyncToggle, anisotropicFilteringToggle, screenSizeToggle;
 	public Dropdown antiAliasingDropdown, textureDetailDropdown;
 
 	// Used to initialise singleton
@@ -72,5 +72,10 @@ public class GraphicsSettingsController : MonoBehaviour
 	public void ChangeTextureDetail()
 	{
         QualitySettings.masterTextureLimit = 4 - textureDetailDropdown.value;
+	}
+
+	public void ChangeScreenSize()
+	{
+		Screen.fullScreen = screenSizeToggle.isOn;
 	}
 }
