@@ -7,10 +7,25 @@ using UnityEngine.UI;
 public class MainMenuController : MonoBehaviour
 {
 	public Slider loadingBar;
+	public GameObject startMenu, levelSelectMenu;
 
-    public void StartGame(string levelName)
+    public void StartGame()
 	{
-            StartCoroutine(StartLoadLevel(levelName));
+		startMenu.SetActive(false);
+		levelSelectMenu.SetActive(true);
+	}
+
+	public void ReturnToStartMenu()
+	{
+		levelSelectMenu.SetActive(false);
+		startMenu.SetActive(true);
+	}
+
+	public void SelectLevel(string levelName)
+	{
+		loadingBar.gameObject.SetActive(true);
+		levelSelectMenu.SetActive(false);
+        StartCoroutine(StartLoadLevel(levelName));
 	}
 
 	public void ExitGame ()

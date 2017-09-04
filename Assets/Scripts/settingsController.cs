@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class settingsController : MonoBehaviour
 {
@@ -56,6 +57,11 @@ public class settingsController : MonoBehaviour
         gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         gc.paused = false;
+    }
+
+    public void ReturnToLevelSelect()
+    {
+        SceneManager.LoadScene(0); // The first scene should *always* be the main menu
     }
 
     // Quit game

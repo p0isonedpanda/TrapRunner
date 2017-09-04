@@ -66,6 +66,7 @@ public class playerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         firstPersonAnim = GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>();
         stamina = maxStamina;
+        health =  maxHealth;
     }
 
     // Update is called once per frame
