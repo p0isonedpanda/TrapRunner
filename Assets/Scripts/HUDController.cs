@@ -23,8 +23,6 @@ public class HUDController : MonoBehaviour
 	void Update ()
     {
         // Change stamina bar display to represent remaining stamina
-        //staminaBar.fillAmount = pc.stamina / pc.maxStamina;
-        //staminaUsed.fillAmount = 1.0f - staminaBar.fillAmount;
         staminaBar.value = pc.stamina / pc.maxStamina;
 
         // Change health bar display to represent remaining stamina

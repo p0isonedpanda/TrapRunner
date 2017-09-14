@@ -24,6 +24,51 @@ public class GraphicsSettingsController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+        // Set graphics settings to show the default settings
+		if (QualitySettings.vSyncCount == 1)
+	        vsyncToggle.isOn = true;
+		else
+		    vsyncToggle.isOn = false;
+
+		switch (QualitySettings.antiAliasing)
+		{
+            case 0:
+			    antiAliasingDropdown.value = 0;
+				break;
+			case 2:
+			    antiAliasingDropdown.value = 1;
+				break;
+			case 4:
+			    antiAliasingDropdown.value = 2;
+				break;
+			case 8:
+			    antiAliasingDropdown.value = 3;
+				break;
+		}
+
+		if (QualitySettings.anisotropicFiltering == AnisotropicFiltering.ForceEnable)
+		    anisotropicFilteringToggle.isOn = true;
+		else
+		    anisotropicFilteringToggle.isOn = false;
+
+		switch (QualitySettings.masterTextureLimit)
+		{
+			case 0:
+			    textureDetailDropdown.value = 3;
+				break;
+			case 1:
+			    textureDetailDropdown.value = 2;
+				break;
+			case 2:
+			    textureDetailDropdown.value = 1;
+				break;
+			case 3:
+			    textureDetailDropdown.value = 0;
+				break;
+		}
+
+		screenSizeToggle.isOn = Screen.fullScreen;
+
 		sc = settingsController.instance;
 		gameObject.SetActive(false);
 	}
@@ -71,7 +116,7 @@ public class GraphicsSettingsController : MonoBehaviour
 
 	public void ChangeTextureDetail()
 	{
-        QualitySettings.masterTextureLimit = 4 - textureDetailDropdown.value;
+        QualitySettings.masterTextureLimit = 3 - textureDetailDropdown.value;
 	}
 
 	public void ChangeScreenSize()
