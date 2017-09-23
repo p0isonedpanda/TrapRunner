@@ -61,6 +61,7 @@ public class settingsController : MonoBehaviour
 
     public void ReturnToLevelSelect()
     {
+        Time.timeScale = 1.0f; // Make sure that we set the game speed back to normal
         SceneManager.LoadScene(0); // The first scene should *always* be the main menu
     }
 
