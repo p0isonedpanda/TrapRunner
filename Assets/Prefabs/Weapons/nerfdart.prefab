@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4581656766366016}
   - component: {fileID: 54006618432589984}
   - component: {fileID: 64767508022930820}
+  - component: {fileID: 114596072503558518}
   m_Layer: 12
   m_Name: nerfdart
   m_TagString: Untagged
@@ -154,3 +155,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.0006971994, y: 0.0035695522, z: 0.0007330785}
   m_Center: {x: -5.675247e-10, y: -0.000061692655, z: 0}
+--- !u!114 &114596072503558518
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1165766642979898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 473dc734fb0da0e4586a7a21b5be09f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 5
