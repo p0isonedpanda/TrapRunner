@@ -90,10 +90,12 @@ public class playerController : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftControl))
             {
                 charController.height = Mathf.Lerp(charController.height, 1.0f, 0.2f);
+                moveSpeed /= 2;
             }
             else if (!Physics.Raycast(transform.position, Vector3.up, 1.0f, terrainLayer)) // Check if we can uncrouch
             {
                 charController.height = Mathf.Lerp(charController.height, 2.0f, 0.2f);
+                moveSpeed *= 2;
             }
     
             if (charController.isGrounded) // Make sure we can only move while we are grounded
