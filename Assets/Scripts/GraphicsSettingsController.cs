@@ -7,7 +7,7 @@ public class GraphicsSettingsController : MonoBehaviour
 {
     public static GraphicsSettingsController instance { get; private set; }
     
-	settingsController sc;
+	SettingsController sc;
 
 	public Toggle vsyncToggle, anisotropicFilteringToggle, screenSizeToggle;
 	public Dropdown antiAliasingDropdown, textureDetailDropdown;
@@ -69,7 +69,7 @@ public class GraphicsSettingsController : MonoBehaviour
 
 		screenSizeToggle.isOn = Screen.fullScreen;
 
-		sc = settingsController.instance;
+		sc = SettingsController.instance;
 		gameObject.SetActive(false);
 	}
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrapBehaviour : MonoBehaviour
 {
-	playerController pc;
+	PlayerController pc;
 
 	Animator anim;
 	bool ready = true;
@@ -12,7 +12,7 @@ public class TrapBehaviour : MonoBehaviour
     // Initialise variables
     void Start ()
 	{
-		pc = playerController.instance;
+		pc = PlayerController.instance;
 		anim = GetComponent<Animator>();
 	}	
 

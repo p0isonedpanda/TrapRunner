@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class destroyOverTime : MonoBehaviour
+public class DestroyOverTime : MonoBehaviour
 {
     public float lifetime = 1.0f;
 

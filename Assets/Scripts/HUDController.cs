@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
-    playerController pc;
+    PlayerController pc;
 
     [Header("Stamina")]
     //public Image staminaBar;
@@ -16,7 +16,7 @@ public class HUDController : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        pc = playerController.instance;
+        pc = PlayerController.instance;
     }
 	
 	// Update is called once per frame

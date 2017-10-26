@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class playerController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    public static playerController instance { get; private set; }
-    gameController gc;
+    public static PlayerController instance { get; private set; }
+    GameController gc;
 
     [Header("Movement")]
     public float moveSpeed = 10.0f;
@@ -60,8 +60,8 @@ public class playerController : MonoBehaviour
     void Start()
     {
         charController = GetComponent<CharacterController>();
-        gc = gameController.instance;
-        pauseMenu = settingsController.instance.gameObject;
+        gc = GameController.instance;
+        pauseMenu = SettingsController.instance.gameObject;
         lookSpeed = lookSpeedMax / 2;
         Cursor.lockState = CursorLockMode.Locked;
         firstPersonAnim = GameObject.FindGameObjectsWithTag("weapon")[0].GetComponent<Animator>();

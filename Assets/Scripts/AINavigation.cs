@@ -49,14 +49,14 @@ public class AINavigation : MonoBehaviour
         randDirection += transform.position;
         NavMeshHit hit;
         NavMesh.SamplePosition(randDirection, out hit, 100.0f, 1);
-        Debug.Log("Setting a new destination: (" + hit.position.x + ", " + hit.position.z + ")");
+        //Debug.Log("Setting a new destination: (" + hit.position.x + ", " + hit.position.z + ")");
         return hit;
     }
 
     // Called whenever the AI takes damage
     public void ApplyDamage(float damageTaken)
     {
-        Debug.Log("Taking " + damageTaken + " damage");
+        //Debug.Log("Taking " + damageTaken + " damage");
         Instantiate(aiHitGhost, transform.position, transform.rotation); // Used for debug reasons only to track where the AI has been hit
     }
 }

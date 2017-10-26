@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class settingsController : MonoBehaviour
+public class SettingsController : MonoBehaviour
 {
-    public static settingsController instance { get; private set; }
+    public static SettingsController instance { get; private set; }
     
-    gameController gc;
-    playerController pc;
+    GameController gc;
+    PlayerController pc;
     GraphicsSettingsController gsc;
 
     // Used to initialise singleton
@@ -24,8 +24,8 @@ public class settingsController : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        gc = gameController.instance;
-        pc = playerController.instance;
+        gc = GameController.instance;
+        pc = PlayerController.instance;
         gsc = GraphicsSettingsController.instance;
         gameObject.SetActive(false);
 	}

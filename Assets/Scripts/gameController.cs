@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class gameController : MonoBehaviour
+public class GameController : MonoBehaviour
 {
-    public static gameController instance { get; private set; }
+    public static GameController instance { get; private set; }
 
     [HideInInspector] public bool paused = false;
 

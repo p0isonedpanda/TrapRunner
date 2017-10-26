@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-public class weaponBehaviour : MonoBehaviour
+public class GunController : MonoBehaviour
 {
-    gameController gc;
+    GameController gc;
 
     [Header("Universal Settings")]
     public float weaponFireRate = 0.1f;
@@ -27,7 +27,7 @@ public class weaponBehaviour : MonoBehaviour
     void Start ()
     {
         playerCam = Camera.main.gameObject;
-        gc = gameController.instance;
+        gc = GameController.instance;
 	}
 	
 	// Update is called once per frame
