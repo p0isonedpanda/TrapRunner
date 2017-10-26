@@ -1386,11 +1386,11 @@ MonoBehaviour:
   lookSpeed: 0
   mouseYLook: 0
   invertedLook: 0
-  health: 100
+  health: 0
   maxHealth: 100
   healthRegenRate: 1
   healthRegenCooldown: 5
-  stamina: 100
+  stamina: 0
   maxStamina: 100
   staminaUsageRate: 15
   staminaRecoveryRate: 20

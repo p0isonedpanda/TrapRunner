@@ -79,3 +79,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Documentation held in project files
+*.docx
+
+# Unity meta files
+*.meta
